@@ -1,11 +1,10 @@
-import React from 'react'
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from "react-router-dom";
-import logo from '../images/logo.png';
+import logo from 'images/logo.png';
 
 const Layout = () => {
     useEffect(() => {
-        document.body.style.backgroundColor = "#ccd9f8"
+        document.body.style.backgroundColor = "#ccd9f8";
     }, [])
 
 
@@ -20,4 +19,4 @@ const Layout = () => {
     )
 }
 
-export default Layout
+export default Layout;

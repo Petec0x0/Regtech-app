@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AuthIllustration from '../components/AuthIllustration';
+import AuthIllustration from 'components/AuthIllustration';
 
 
 const Signup = () => {
@@ -33,4 +33,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default Signup;
