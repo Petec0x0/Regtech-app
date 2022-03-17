@@ -11,9 +11,9 @@ const SideBar = () => {
                 <div className="sidebar-sticky pt-4">
                     <ul className="nav flex-column">
                         <li className="nav-item">
-                            <Link  className={"nav-link" + (pathname.includes('customer-list') ? " active": "")} to="customer-list">
+                            <Link  className={"nav-link" + (pathname.includes('customers') ? " active": "")} to="customers">
                                 <PersonLinesFill className="feather" />
-                                Customers list
+                                Customers
                             </Link>
                         </li>
                         <li className="nav-item">

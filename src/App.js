@@ -9,6 +9,7 @@ import Blank from "pages/Blank";
 import DashboardLayout from "pages/DashboardLayout";
 import CustomersList from "pages/CustomersList";
 import OnboardCustomer from "pages/OnboardCustomer";
+import Profile from "pages/Profile";
 
 function App() {
   
@@ -23,7 +24,8 @@ function App() {
         </Route>
         <Route path="dashboard/" element={<DashboardLayout />}>
           <Route index element={<CustomersList />} />
-          <Route path="customer-list" element={<CustomersList />} />
+          <Route path="customers" element={<CustomersList />} />
+          <Route path="customers/:customersId" element={<Profile />} />
           <Route path="onboard-customer" element={<OnboardCustomer />} />
         </Route>
         <Route path="*" element={<Blank />} />
