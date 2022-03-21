@@ -6,8 +6,18 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     try {
+        // make sure the does not exist already
+        const user = await User.findOne({ email: req.body.email });
+        // check if user exists
+        if (user) {
+            return res.json({
+                message: 'Email address already in use',
+                error: true
+            })
+        } 
+
         // create a user object
-        const user = await User.create({
+        await User.create({
             name: req.body.name,
             email: req.body.email.trim().toLowerCase(),
             password: hashedPassword
@@ -19,7 +29,8 @@ const register = async (req, res, next) => {
         })
 
     } catch (err) {
-        res.json({
+        console.log(err);
+        return res.json({
             message: 'An error occured',
             error: true
         })
@@ -35,7 +46,7 @@ const login = async (req, res, next) => {
         const user = await User.findOne({ email: email });
         // check if user exists
         if (!user) {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Authentication error: invalid username/password',
                 error: true
             })
@@ -43,13 +54,15 @@ const login = async (req, res, next) => {
         // check if user password is correct
         const matched = await bcrypt.compare(password, user.password);
         if (!matched) {
-            res.status(401).json({
+            return res.status(401).json({
                 message: 'Authentication error: invalid username/password',
                 error: true
             })
         }
         // return JWT
-        const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET);
+        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '6h' });
+        // send the token through cookie in the response
+        res.cookie('token', token, { httpOnly: true });
         res.json({
             message: 'User loggedin successflly',
             error: false,
@@ -58,6 +71,10 @@ const login = async (req, res, next) => {
 
     } catch (err) {
         console.log(err);
+        return res.json({
+            message: 'An error occured',
+            error: true
+        })
     }
 
 }

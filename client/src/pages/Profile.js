@@ -29,7 +29,7 @@ const Profile = () => {
                             <div className="col-md-12 profile-header">
                                 <div className="row">
                                     <div className="col-md-8 col-sm-6 col-xs-6 profile-header-section1 pull-left">
-                                        <h1>Juan Perez</h1>
+                                        <h1 className="pb-1">Cynthia Naza</h1>
                                     </div>
 
                                 </div>
@@ -50,53 +50,45 @@ const Profile = () => {
                                             <div role="tabpanel" className="tab-pane fade show active" id="profile">
                                                 <div className="row">
                                                     <div className="col-md-2">
-                                                        <label>Name</label>
+                                                        <label><strong>Name</strong></label>
                                                     </div>
                                                     <div className="col-md-6">
-                                                        <p>Juan Perez</p>
+                                                        <p>Cynthia Naza</p>
                                                     </div>
                                                 </div>
                                                 <div className="row">
                                                     <div className="col-md-2">
-                                                        <label>Email</label>
+                                                        <label><strong>Email</strong></label>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <p>juanp@gmail.com</p>
-                                                    </div>
-                                                </div>
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        <label>Telephone</label>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <p>12345678</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div role="tabpanel" className="tab-pane fade" id="buzz">
                                                 <div className="row">
                                                     <div className="col-md-6">
-                                                        <label>Experience</label>
+                                                        <label><strong>Date of birth</strong></label>
                                                     </div>
                                                     <div className="col-md-6">
-                                                        <p>Expert</p>
+                                                        <p>03 Jan 2000</p>
                                                     </div>
                                                 </div>
                                                 <div className="row">
                                                     <div className="col-md-6">
-                                                        <label>Availability</label>
+                                                        <label><strong>Country of residence</strong></label>
                                                     </div>
                                                     <div className="col-md-6">
-                                                        <p>6 months</p>
+                                                        <p>Peru</p>
                                                     </div>
                                                 </div>
-                                                <div className="row">
+                                                {/* <div className="row">
                                                     <div className="col-md-12">
                                                         <label>Bio</label>
                                                         <br />
                                                         <p>Detail description</p>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
 
                                         </div>

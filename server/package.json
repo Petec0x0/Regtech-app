@@ -5,13 +5,17 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "installAll": "npm install && cd .. && cd client && npm install",
     "start": "node server",
-    "dev": "nodemon server"
+    "start:server": "nodemon server",
+    "start:client": "cd .. && cd client && npm run start",
+    "dev": "concurrently \"npm run start:server\" \"npm run start:client\""
   },
   "author": "Petec0x0",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",

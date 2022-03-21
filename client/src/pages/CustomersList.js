@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'styles/customerlist.css';
 
 const CustomersList = () => {
+    let navigate = useNavigate();
+
     const customers = require('data/customers.json');
     return (
         <>
@@ -10,23 +12,49 @@ const CustomersList = () => {
                 <h1 className="h2">Customers</h1>
             </div>
 
-            <div className="row">
-                {
-                    customers.map((customer, index) => {
-                        return (
-                            <Link to={`${customer.id}`} key={index} className="card col-sm-3" style={{textDecoration: "none", color: "inherit"}}>
-                                <img 
-                                    src={require(`images/${customer.thumbnail}`)} 
-                                    className="img-fluid" alt={customer.name} 
-                                    style={{width:"100%", maxHeight: '118px', objectFit: "cover"}} 
-                                />
-                                <h4>{customer.name}</h4>
-                                <p className="text-primary">{customer.email}</p>
-                                <p className={`badge badge-${customer.status} badge-outlined`}>{customer.status}</p>
-                            </Link>
-                        );
-                    })
-                }
+            <div className="table-responsive">
+                <table className="table table-striped table-hover">
+                    <thead className="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Custome Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            customers.map((customer, index) => {
+                                return (
+                                    <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.id}`) }}>
+                                        <td>
+                                            <img
+                                                src={require(`images/${customer.thumbnail}`)}
+                                                className="rounded-circle" alt={customer.name}
+                                                style={{ width: "60px", height: '60px', objectFit: "cover" }}
+                                            />
+                                        </td>
+                                        <td>{customer.name}</td>
+                                        <td className="text-primary">{customer.email}</td>
+                                        <td>
+                                            <p className={`badge badge-${customer.status}`}>{customer.status}</p>
+                                        </td>
+
+                                    </tr>
+                                );
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="containers">
+                <ul className="pagination justify-content-end">
+                    <li className="page-item disabled"><Link className="page-link" to="#">Previous</Link></li>
+                    <li className="page-item active"><Link className="page-link" to="#">1</Link></li>
+                    <li className="page-item"><Link className="page-link" to="#">2</Link></li>
+                    <li className="page-item"><Link className="page-link" to="#">Next</Link></li>
+                </ul>
             </div>
         </>
     )
