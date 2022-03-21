@@ -8,6 +8,7 @@ SECRET_KEY=<REPLACE_WITH_YOUR_SECRET_KEY>
 JWT_SECRET=<REPLACE_WITH_YOUR_JWT_SECRET>
 ```
 Install `concurrently` globally.
+
 `npm install -g concurrently`
 
 From the terminal, navigate to the 'server' directory.
@@ -18,3 +19,7 @@ Run `npm run installAll` to install the dependencies for both server and client 
 OR
 
 `npm install && cd .. && cd client && npm install`
+
+To start up the application run `npm run dev`
+
+Open in your browser `http://localhost:3000`
