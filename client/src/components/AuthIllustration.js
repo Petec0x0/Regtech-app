@@ -1,5 +1,5 @@
 import React from 'react';
-import illustration from '../images/illustration-1.svg';
+import illustration from 'images/illustration-1.svg';
 
 const AuthIllustration = () => {
     return (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthIllustration from 'components/AuthIllustration';
+import AlertMessage from 'components/AlertMessage';
 
 const Login = () => {
     let navigate = useNavigate();
@@ -11,7 +12,7 @@ const Login = () => {
     let params = new URLSearchParams(search);
     let signupSuccess = params.get('signupSuccess');
 
-    // States for registration
+    // States for the login
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -44,25 +45,25 @@ const Login = () => {
             // send a post request to the server
             (async () => {
                 const rawResponse = await fetch('/api/auth/login', {
-                  method: 'POST',
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({email: email, password: password})
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email, password: password })
                 });
                 const content = await rawResponse.json();
                 console.log(content);
                 // stop the progress bar
                 setSubmitted(false);
-                // check if there is an error with the response
-                if(content.error){
+                // check if there is an error in the response
+                if (content.error) {
                     setErroMsg(content.message);
                     setError(true);
-                }else{
+                } else {
                     // redirect to login page
                     navigate("/dashboard/customers");
-                }                
+                }
             })();
         }
     }
@@ -75,10 +76,10 @@ const Login = () => {
                     // show a success alert message if signupSuccess
                     // exists in the query parameter
                     (signupSuccess) ? (
-                        <div className="alert alert-success alert-dismissible">
-                            <button type="button" className="close" data-dismiss="alert">&times;</button>
-                            Account created successflly. Login to continue.
-                        </div>
+                        <AlertMessage
+                            message="Account created successflly. Login to continue."
+                            category="success"
+                        />
                     ) : ""
                 }
 

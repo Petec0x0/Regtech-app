@@ -57,7 +57,7 @@ const Signup = () => {
                 console.log(content);
                 // stop the progress bar
                 setSubmitted(false);
-                // check if there is an error with the response
+                // check if there is an error in the response
                 if(content.error){
                     setErroMsg(content.message);
                     setError(true);

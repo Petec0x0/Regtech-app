@@ -1,3 +1,7 @@
+body {
+  font-family: montserrat, arial, verdana;
+}
+
 .logo-text {
   font-size: medium;
   font-weight: bold;
@@ -10,4 +14,11 @@
   background: #fff;
   padding: 20px;
   border-radius: 10px;
+}
+
+/**/
+.onboard-container {
+  background:url('images/onboard-illustration.svg') no-repeat;
+	background-size: 800px;
+  height: 550px;
 }

@@ -5,10 +5,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Layout from "pages/Layout";
 import Login from "pages/Login";
 import Signup from "pages/Signup";
-import Blank from "pages/Blank";
+import NotFound from "pages/NotFound";
 import DashboardLayout from "pages/DashboardLayout";
 import CustomersList from "pages/CustomersList";
 import OnboardCustomer from "pages/OnboardCustomer";
+import CustomerOnboarding from "pages/CustomerOnboarding";
 import Profile from "pages/Profile";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route index element={<Signup />} />
           <Route path="signup" element={<Signup />} />
           <Route path="login" element={<Login />} />
+          <Route path="live-onboarding/:customerLink" element={<CustomerOnboarding />} />
         </Route>
         <Route path="dashboard/" element={<DashboardLayout />}>
           <Route index element={<CustomersList />} />
@@ -28,7 +30,7 @@ function App() {
           <Route path="customers/:customersId" element={<Profile />} />
           <Route path="onboard-customer" element={<OnboardCustomer />} />
         </Route>
-        <Route path="*" element={<Blank />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
