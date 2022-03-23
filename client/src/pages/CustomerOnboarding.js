@@ -105,7 +105,7 @@ const CustomerOnboarding = () => {
                     <fieldset style={{ display: (currentStep[0]) ? '' : 'none' }}>
                         <h2 className="fs-title">Document Upload</h2>
                         <h3 className="fs-subtitle">Upload an identity document(e.g Password)</h3>
-                        <input type="file" className="form-control-file border" name="file" />
+                        <input type="file" className="form-control-file border" name="document" />
                         <input onClick={handleNext} type="button" name="next" className="next action-button" value="Next" />
                     </fieldset>
 

@@ -49,6 +49,9 @@ const customerSchema = new mongoose.Schema(
         },
         occupation: {
             type: String
+        },
+        dateOfBirth: {
+            type: Date
         }
 
     },

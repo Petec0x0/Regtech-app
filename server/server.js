@@ -5,6 +5,7 @@ require('dotenv').config();
 const verifyClient = require('./middlewares/verifyClient');
 const AuthRoute = require('./routes/auth');
 const CustomerRoute = require('./routes/customer');
+const CustomerOnboardingRoute = require('./routes/customerOnboarding');
 
 const app = express();
 // const cors = require("cors");
@@ -42,6 +43,7 @@ db.once('open', () => {
 // Routes
 app.use('/api/auth', AuthRoute);
 app.use('/api/customer', verifyClient, CustomerRoute);
+app.use('/api/onboarding', CustomerOnboardingRoute);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const { Customer } = require('../models');
 const onboardEmail = require('../views/onboardEmail');
@@ -40,7 +41,7 @@ const onboardCustomer = async (req, res, next) => {
             name: customerName,
             email: customerEmail,
             linkId: linkId,
-            client: user._id
+            client: mongoose.Types.ObjectId(user._id)
         });
 
         /**
