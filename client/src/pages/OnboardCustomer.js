@@ -10,6 +10,7 @@ const OnboardCustomer = () => {
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState(false);
     const [errorMsg, setErroMsg] = useState("");
+    const [onboardingSuccess, setOnboardingSuccess] = useState(false);
 
     // Handling the name change
     const handleName = (e) => {
@@ -34,7 +35,7 @@ const OnboardCustomer = () => {
             setError(false);
             // send a post request to the server
             (async () => {
-                const rawResponse = await fetch('/api/auth/register', {
+                const rawResponse = await fetch('/api/customer/onboard-customer', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -51,8 +52,8 @@ const OnboardCustomer = () => {
                     setErroMsg(content.message);
                     setError(true);
                 } else {
-                    // redirect to login page
-                    // navigate("/login?signupSuccess=true");
+                    // show 
+                    setOnboardingSuccess(true);
                 }
             })();
         }
@@ -65,10 +66,16 @@ const OnboardCustomer = () => {
             </div>
             <div className="row mt-5 d-flex justify-content-center onboard-container">
                 <div className="col-xs-12 col-sm-6 col-lg-4">
-                    <AlertMessage 
-                        message="Account created successflly. Login to continue."
-                        category="success"
-                    />
+                    {
+                        // show a success alert message if signupSuccess
+                        // exists in the query parameter
+                        (onboardingSuccess) ? (
+                            <AlertMessage
+                                message={`Onboarding link has been sent to ${email} successfully`}
+                                category="success"
+                            />
+                        ) : ""
+                    }
                     <div className="login-form">
                         <h5 className="text-center font-weight-bold">Onboard Customer</h5>
                         <form className="mt-4" method="POST">

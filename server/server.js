@@ -41,7 +41,7 @@ db.once('open', () => {
 
 // Routes
 app.use('/api/auth', AuthRoute);
-app.use('/customer', verifyClient, CustomerRoute);
+app.use('/api/customer', verifyClient, CustomerRoute);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
