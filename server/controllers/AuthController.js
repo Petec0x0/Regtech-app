@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const {User} = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -23,7 +23,7 @@ const register = async (req, res, next) => {
             password: hashedPassword
         });
 
-        res.json({
+        res.status(201).json({
             message: 'User added successflly',
             error: false
         })
@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
             })
         }
         // return JWT
-        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '6h' });
+        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         // send the token through cookie in the response
         res.cookie('token', token, { httpOnly: true });
         res.json({

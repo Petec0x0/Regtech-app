@@ -18,7 +18,7 @@ const CustomerOnboarding = () => {
         controls: true,
         bigPlayButton: false,
         loop: false,
-        fluid: false,
+        fluid: true,
         width: 380,
         height: 240,
         plugins: {
@@ -48,6 +48,8 @@ const CustomerOnboarding = () => {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('finished recording: ', player.recordedData);
+            // show save as dialog
+            //player.record().saveAs({'video': 'my-video-file-name.webm'});
         });
     })
 
@@ -124,7 +126,7 @@ const CustomerOnboarding = () => {
                         <input type="text" name="countryOfResidence" placeholder="Country of residence" />
                         <input type="text" name="phoneNo" placeholder="Phone number" />
                         <input type="text" name="address" placeholder="Address" />
-                        <input type="text" name="ocupation" placeholder="Occupation" />
+                        <input type="text" name="occupation" placeholder="Occupation" />
                         <input onClick={handlePrevious} type="button" name="previous" className="previous action-button-previous" value="Previous" />
                         <input type="submit" name="submit" className="submit action-button" value="Submit" />
                     </fieldset>

@@ -1,10 +1,11 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 const mongoose = require("mongoose");
 require('dotenv').config();
-
+const verifyClient = require('./middlewares/verifyClient');
 const AuthRoute = require('./routes/auth');
+const CustomerRoute = require('./routes/customer');
+
 const app = express();
 // const cors = require("cors");
 // var corsOptions = {
@@ -15,8 +16,10 @@ const app = express();
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-// 
+// middleware for parsing cookie from the request
 app.use(cookieParser());
+// make a directory accessible as a public dir
+app.use('/assets', express.static('assets'));
 
 // Database connection
 // Store the DB_HOST value as a variable
@@ -30,29 +33,15 @@ const db = mongoose.connection;
 
 db.on('error', (err) => {
   console.log(err);
-  console.log("PLEASE MAKE SURE YOU'RE CONNECTED TO THE INTERNET")
+  console.log("PLEASE MAKE SURE YOU'RE CONNECTED TO THE INTERNET (DATABASE IS ON A REMOTE SERVER)")
 })
 db.once('open', () => {
   console.log('Database connection established');
 })
 
 // Routes
-app.get('/check-auth', (req, res, next) => {
-  try {
-    const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-    console.log(decoded.email);
-    res.json({
-      message: 'Authenticated!',
-      error: false
-    });
-  } catch (err) {
-    res.json({
-      message: 'Authentication error',
-      error: true
-    });
-  }
-})
 app.use('/api/auth', AuthRoute);
+app.use('/customer', verifyClient, CustomerRoute);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
