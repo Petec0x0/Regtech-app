@@ -34,6 +34,13 @@ router.post("/upload", cpUpload, async (req, res, next) => {
      */
     try {
          let customer = await Customer.findOne({ linkId: req.body.linkId });
+         // Return an error if customer is not valid
+         if(!customer){
+            return res.status(401).json({
+                message: 'Authorization error: broken/invalid link',
+                error: true
+            })
+         }
          customer.documentPath = req.files['document'][0]['path'];
          customer.videoPath = req.files['video'][0]['path'];
          customer.passportNo = req.body.passportNo;
@@ -49,7 +56,7 @@ router.post("/upload", cpUpload, async (req, res, next) => {
             message: 'Customer Onboarding Successfull',
             error: false
         })
-    } catch (error) {
+    } catch (err) {
         console.log(err);
         return res.json({
             message: 'An error occured',

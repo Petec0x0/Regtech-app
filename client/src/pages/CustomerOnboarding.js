@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'styles/customer-onboarding.css';
 // VideoJs plugin
 import videojs from 'video.js';
@@ -8,11 +9,12 @@ import 'video.js/dist/video-js.min.css';
 // The extra stylesheet for the plugin that includes 
 // a custom font with additional icons
 import 'videojs-record/dist/css/videojs.record.css';
-
-
-
+import AlertMessage from 'components/AlertMessage';
 
 const CustomerOnboarding = () => {
+    // get customerLink Id from the url
+    const { customerLink } = useParams();
+
     let options = {
         // video.js options
         controls: true,
@@ -33,6 +35,8 @@ const CustomerOnboarding = () => {
         }
     };
 
+    //State for storing recorded video
+    const [videoFile, setVideoFile] = useState(null);
     useEffect(() => {
         // Initialize the video plugin when the page is fully loaded
         let player = videojs('myVideo', options, function () {
@@ -48,6 +52,7 @@ const CustomerOnboarding = () => {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('finished recording: ', player.recordedData);
+            setVideoFile(player.recordedData)
             // show save as dialog
             //player.record().saveAs({'video': 'my-video-file-name.webm'});
         });
@@ -59,7 +64,7 @@ const CustomerOnboarding = () => {
     const [activeForms, setActiveForm] = useState([1]);
 
     // A function for rearranging array elements used 
-    // for keeping track of the current form
+    // for keeping track of the current form (forget about how it works)
     const array_move = (arr, old_index, new_index) => {
         if (new_index >= arr.length) {
             var k = new_index - arr.length + 1;
@@ -88,11 +93,113 @@ const CustomerOnboarding = () => {
         setActiveForm([...activeForms]);
     }
 
+    // states for storing for data
+    const [formInputData, setFormInputData] = useState({});
+    const [selectedDocument, setSelectedDocument] = useState(null);
+    // States for checking the errors
+    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState(false);
+    const [errorMsg, setErroMsg] = useState("");
+    const [onboardingSuccess, setOnboardingSuccess] = useState(false);
+
+    const handleFormInput = (e) => {
+        setFormInputData({
+            ...formInputData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSelectDocument = (e) => {
+        // handle validations
+        let file = e.target.files[0];
+        setSelectedDocument(file);
+        setSubmitted(false);
+    }
+
+    // Handling the form submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // make sure none of the inputs is empty
+        const isAvailable = (('dateOfBirth' in formInputData) && ('passportNo' in formInputData) &&
+            ('nationality' in formInputData) && ('countryOfResidence' in formInputData) &&
+            ('phoneNo' in formInputData) && ('address' in formInputData) && ('occupation' in formInputData))
+        const isAnyFromEmpty = Object.values(formInputData).every(x => x === null || x === '');
+        if (isAnyFromEmpty || !isAvailable) {
+            setErroMsg("Please fill all the required fields");
+            setError(true);
+        } else {
+            /**
+             * make sure a document was uploaded a video was recorded
+             */
+            // 
+            if ((Object.keys(videoFile).length === 0)) {
+                setErroMsg("Please record a 5 seconds video in step 2");
+                setError(true);
+            } else if (!(selectedDocument)) {
+                setErroMsg("Please select a document in Step 1");
+                setError(true);
+            } else {
+                setError(false);
+                setSubmitted(true);
+                const formData = new FormData();
+                // append the customer selected document to the form data
+                formData.append('document', selectedDocument);
+                // append the recorded video to the form data
+                formData.append('video', videoFile, videoFile.name);
+                // append customerLink to the form data
+                formData.append('linkId', customerLink);
+                // append the rest of the form input data
+                Object.keys(formInputData).map((key, index) => {
+                    return formData.append(key, formInputData[key]);
+                });
+
+                // send form data as post request to the server
+                (async () => {
+                    const rawResponse = await fetch('/api/onboarding/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const content = await rawResponse.json();
+                    console.log(content);
+                    // stop the progress bar
+                    setSubmitted(false);
+                    // check if there is an error in the response
+                    if (content.error) {
+                        setErroMsg(content.message);
+                        setError(true);
+                    } else {
+                        setOnboardingSuccess(true);
+                    }
+                })();
+            }
+        }
+    }
 
     return (
         <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-md-offset-3">
-                <form id="msform">
+                <form id="msform" encType="multipart/form-data" style={{ display: onboardingSuccess ? 'none' : '' }}>
+                    {
+                        // show the alert message if there is an error
+                        (error) ? (
+                            <div className="alert alert-danger">
+                                {errorMsg}
+                            </div>
+                        ) : ""
+                    }
+
+                    {
+                        // show the progress bar if data is submited and being processed
+                        (submitted) ? (
+                            <div className="progress mb-4">
+                                <div className="progress-bar progress-bar-striped progress-bar-animated"
+                                    role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                                    style={{ width: "100%" }}>
+                                </div>
+                            </div>
+                        ) : ""
+                    }
+
                     {/* <!-- progressbar --> */}
                     <ul id="progressbar">
                         <li className={activeForms[0] ? "active" : ""}>Document Upload</li>
@@ -105,32 +212,84 @@ const CustomerOnboarding = () => {
                     <fieldset style={{ display: (currentStep[0]) ? '' : 'none' }}>
                         <h2 className="fs-title">Document Upload</h2>
                         <h3 className="fs-subtitle">Upload an identity document(e.g Password)</h3>
-                        <input type="file" className="form-control-file border" name="document" />
-                        <input onClick={handleNext} type="button" name="next" className="next action-button" value="Next" />
+                        {/* Document selector input field */}
+                        <input
+                            onChange={handleSelectDocument}
+                            type="file"
+                            className="form-control-file border"
+                            name="document"
+                        />
+                        <input
+                            onClick={handleNext}
+                            type="button" name="next"
+                            className="next action-button" value="Next"
+                        />
                     </fieldset>
 
                     <fieldset style={{ display: (currentStep[1]) ? '' : 'none' }}>
                         <h2 className="fs-title">Record Video</h2>
                         <h3 className="fs-subtitle">Record a 5 second video of your face</h3>
                         <video id="myVideo" playsInline className="video-js vjs-default-skin"></video>
-                        <input onClick={handlePrevious} type="button" name="previous" className="previous action-button-previous" value="Previous" />
-                        <input onClick={handleNext} type="button" name="next" className="next action-button" value="Next" />
+                        <input
+                            onClick={handlePrevious}
+                            type="button" name="previous"
+                            className="previous action-button-previous" value="Previous"
+                        />
+                        <input
+                            onClick={handleNext}
+                            type="button" name="next"
+                            className="next action-button" value="Next"
+                        />
                     </fieldset>
 
                     <fieldset style={{ display: (currentStep[2]) ? '' : 'none' }}>
                         <h2 className="fs-title">Personal Information</h2>
                         <h3 className="fs-subtitle">Fill in your credentials</h3>
-                        <input type="date" className="form-control" name="dob" />
-                        <input type="text" name="passportNo" placeholder="Enter Passport number" />
-                        <input type="text" name="nationality" placeholder="Nationality" />
-                        <input type="text" name="countryOfResidence" placeholder="Country of residence" />
-                        <input type="text" name="phoneNo" placeholder="Phone number" />
-                        <input type="text" name="address" placeholder="Address" />
-                        <input type="text" name="occupation" placeholder="Occupation" />
+                        <input
+                            onChange={handleFormInput} value={formInputData['dateOfBirth']}
+                            type="date" className="form-control" name="dateOfBirth"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['passportNo']}
+                            type="text" name="passportNo" placeholder="Enter Passport number"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['nationality']}
+                            type="text" name="nationality" placeholder="Nationality"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['countryOfResidence']}
+                            type="text" name="countryOfResidence" placeholder="Country of residence"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['phoneNo']}
+                            type="text" name="phoneNo" placeholder="Phone number"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['address']}
+                            type="text" name="address" placeholder="Address"
+                        />
+                        <input
+                            onChange={handleFormInput} value={formInputData['occupation']}
+                            type="text" name="occupation" placeholder="Occupation"
+                        />
                         <input onClick={handlePrevious} type="button" name="previous" className="previous action-button-previous" value="Previous" />
-                        <input type="submit" name="submit" className="submit action-button" value="Submit" />
+                        <input
+                            onClick={handleSubmit}
+                            type="submit" name="submit"
+                            className="submit action-button" value="Submit"
+                        />
                     </fieldset>
                 </form>
+                {
+                    // show a success alert message if onboardingSuccess
+                    (onboardingSuccess) ? (
+                        <AlertMessage
+                            message={`Thank you for onboarding yourself`}
+                            category="success"
+                        />
+                    ) : ""
+                }
             </div>
         </div>
     )

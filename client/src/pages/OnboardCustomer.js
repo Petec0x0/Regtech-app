@@ -67,8 +67,7 @@ const OnboardCustomer = () => {
             <div className="row mt-5 d-flex justify-content-center onboard-container">
                 <div className="col-xs-12 col-sm-6 col-lg-4">
                     {
-                        // show a success alert message if signupSuccess
-                        // exists in the query parameter
+                        // show a success alert message if onboardingSuccess
                         (onboardingSuccess) ? (
                             <AlertMessage
                                 message={`Onboarding link has been sent to ${email} successfully`}
