@@ -97,4 +97,53 @@ const onboardCustomer = async (req, res, next) => {
 
 }
 
-module.exports = { onboardCustomer };
+const getCustomers = async (req, res, next) => {
+    /**
+     * This controller gets all the customer from the database
+     */
+    // find the authenticated user
+    const user = res.locals.user;
+    try {
+        let customers = await Customer.find({ client: user._id });
+        res.json({
+            data: customers,
+            error: false
+        })
+    } catch (err) {
+        console.log(err);
+        return res.json({
+            message: 'An error occured',
+            error: true
+        })
+    }
+}
+
+const getOneCustomer = async (req, res, next) => {
+    /**
+     * This controller gets a single customer
+     */
+    // find the authenticated user
+    const user = res.locals.user;
+    console.log({ client: user._id, linkId: req.params.linkId });
+    try {
+        // send 404 response when a customer is not found
+        if(!customer){
+            return res.status(404).json({
+                message: 'Customer not found',
+                error: true
+            })
+        }
+        res.json({
+            data: customer,
+            error: false
+        })
+    } catch (err) {
+        console.log(err);
+        return res.json({
+            message: 'An error occured',
+            error: true
+        })
+    }
+}
+
+module.exports = { onboardCustomer, getCustomers, getOneCustomer };

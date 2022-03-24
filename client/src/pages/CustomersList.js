@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'styles/customerlist.css';
 
 const CustomersList = () => {
     let navigate = useNavigate();
+
+    useEffect(() => {
+        // send a post request to the server to fetch customers
+        // (async () => {
+        //     const rawResponse = await fetch('/api/auth/login', {
+        //         method: 'GET',
+        //     });
+        //     const content = await rawResponse.json();
+        //     const status = rawResponse.status;
+        //     console.log(content);
+        //     // stop the progress bar
+        //     setSubmitted(false);
+        //     // check if there is an error in the response
+        //     if (content.error) {
+        //         setErroMsg(content.message);
+        //         setError(true);
+        //     } else {
+        //         // redirect to login page
+        //         navigate("/dashboard/customers");
+        //     }
+        // })();
+    })
 
     const customers = require('data/customers.json');
     return (
@@ -11,7 +33,8 @@ const CustomersList = () => {
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 className="h2">Customers</h1>
             </div>
-
+            <div class="spinner-border text-primary"></div>
+            <div class="spinner-border text-primary"></div>
             <div className="table-responsive">
                 <table className="table table-striped table-hover">
                     <thead className="thead-light">
@@ -37,7 +60,7 @@ const CustomersList = () => {
                                         <td>{customer.name}</td>
                                         <td className="text-primary">{customer.email}</td>
                                         <td>
-                                            <p className={`badge badge-${customer.status}`}>{customer.status}</p>
+                                            <p className={`badge badge-${customer.status}`}><i>{customer.status}</i></p>
                                         </td>
 
                                     </tr>

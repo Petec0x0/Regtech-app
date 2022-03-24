@@ -24,7 +24,8 @@ const customerSchema = new mongoose.Schema(
             default: 'pending'
         },
         thumbnailPath: {
-            type: String
+            type: String,
+            default: 'uploads//thumbnails//avatar_profile.png'
         },
         documentPath: {
             type: String

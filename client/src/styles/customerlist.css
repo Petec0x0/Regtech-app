@@ -43,8 +43,8 @@
     }
 
     .badge.badge-outlined.badge-pending {
-      border-color: #FFD600;
-      color: #FFD600
+      border-color: #d39e00;
+      color: #d39e00
     }
 
     .badge.badge-outlined.badge-rejected {

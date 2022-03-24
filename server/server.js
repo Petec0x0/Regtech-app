@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // make a directory accessible as a public dir
 app.use('/assets', express.static('assets'));
+app.use('/uploads', express.static('uploads'));
 
 // Database connection
 // Store the DB_HOST value as a variable
