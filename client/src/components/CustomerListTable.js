@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CustomerListTable = ({customers, navigate}) => {
+const CustomerListTable = ({ customers, navigate }) => {
     return (
         <div className="table-responsive">
             <table className="table table-striped table-hover">
@@ -15,23 +15,25 @@ const CustomerListTable = ({customers, navigate}) => {
                 <tbody>
                     {
                         customers.map((customer, index) => {
-                            return (
-                                <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.linkId}`) }}>
-                                    <td>
-                                        <img
-                                            src={`https://regtech-meduim.herokuapp.com/${customer.thumbnailPath}`}
-                                            className="rounded-circle" alt={customer.name}
-                                            style={{ width: "40px", height: '40px', objectFit: "cover" }}
-                                        />
-                                    </td>
-                                    <td className="align-middle">{customer.name}</td>
-                                    <td className="align-middle text-primary">{customer.email}</td>
-                                    <td className="align-middle">
-                                        <p className={`badge badge-${customer.status}`}><i>{customer.status}</i></p>
-                                    </td>
+                            if (cutomer.phoneNo) {
+                                return (
+                                    <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.linkId}`) }}>
+                                        <td>
+                                            <img
+                                                src={`https://regtech-meduim.herokuapp.com/${customer.thumbnailPath}`}
+                                                className="rounded-circle" alt={customer.name}
+                                                style={{ width: "40px", height: '40px', objectFit: "cover" }}
+                                            />
+                                        </td>
+                                        <td className="align-middle">{customer.name}</td>
+                                        <td className="align-middle text-primary">{customer.email}</td>
+                                        <td className="align-middle">
+                                            <p className={`badge badge-${customer.status}`}><i>{customer.status}</i></p>
+                                        </td>
 
-                                </tr>
-                            );
+                                    </tr>
+                                );
+                            }
                         })
                     }
                 </tbody>
