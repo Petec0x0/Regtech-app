@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 require('dotenv').config();
@@ -19,6 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // middleware for parsing cookie from the request
 app.use(cookieParser());
+//When you navigate to the root page, it would use the built react-app
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 // make a directory accessible as a public dir
 app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
@@ -41,7 +44,11 @@ db.once('open', () => {
   console.log('Database connection established');
 })
 
+
 // Routes
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 app.use('/api/auth', AuthRoute);
 app.use('/api/customer', verifyClient, CustomerRoute);
 app.use('/api/onboarding', CustomerOnboardingRoute);

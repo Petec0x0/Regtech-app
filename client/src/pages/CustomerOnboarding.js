@@ -163,7 +163,6 @@ const CustomerOnboarding = () => {
                         body: formData
                     });
                     const content = await rawResponse.json();
-                    console.log(content);
                     // stop the progress bar
                     setSubmitted(false);
                     // check if there is an error in the response
