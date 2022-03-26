@@ -26,6 +26,9 @@ const Profile = () => {
             if (status === 401) {
                 // redirect to login page
                 navigate("/login");
+            }else if(status === 404){
+                // redirect to 404 page
+                navigate("/404CustomerNotFound");
             }
             // check if there is an error in the response
             if (content.error) {

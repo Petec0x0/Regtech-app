@@ -45,16 +45,32 @@ const onboardCustomer = async (req, res, next) => {
         });
 
         /**
-         * Send email to customer
+         * Send email to customer 
+         * 357696598345-v9vj9ojgkcn4rsg73t9rdjllk1887kd9.apps.googleusercontent.com
          */
+        // var transporter = nodemailer.createTransport({
+        //     host: "smtp.mailtrap.io",
+        //     port: 2525,
+        //     auth: {
+        //         user: "bbb05535a0a7f7",
+        //         pass: "51a84872d31e00"
+        //     }
+        // });
+
         var transporter = nodemailer.createTransport({
-            host: "smtp.mailtrap.io",
-            port: 2525,
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: {
-                user: "bbb05535a0a7f7",
-                pass: "51a84872d31e00"
+                type: 'OAuth2',
+                user: 'ptc0x0@gmail.com',
+                clientId: '357696598345-v9vj9ojgkcn4rsg73t9rdjllk1887kd9.apps.googleusercontent.com',
+                clientSecret: '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',
+                refreshToken: '1//04Z1zS7qbmsh2CgYIARAAGAQSNwF-L9IrMagMZgVBvg1hjy-8xyqTGHzPXWsZQh0-D4lRdEIvg0oxsrFWra5nY2fXZwElEO_GKlM',
+                accessToken: 'ya29.A0ARrdaM_bwRX_8jgTos_mffxGMLFA0cjrPiwGmfI5AtGQn6zNANqLTw_Zu0EJjtCyVdDO2lyApmIgPuVsm4UOwXxCWLAytVKP7uf3lUOnlz9_ip0V11B6y_D_t-tipVU4dZ2PnxG8MaHedP8P-3hLNUZATiQr'
             }
         });
+        
 
         var mailOptions = {
             from: `${user.name} <${user.email}>`,

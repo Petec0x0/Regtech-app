@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import 'styles/customerlist.css';
+import SpinLoader from 'components/SpinLoader';
+import CustomerListTable from 'components/CustomerListTable';
+import waitingIllustration from 'images/waiting-for-customer.svg';
 
 const CustomersList = () => {
     let navigate = useNavigate();
@@ -41,55 +44,30 @@ const CustomersList = () => {
             {
                 // if data is not ready diplay spinners else diplay the table
                 !isDataReady ? (
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border text-primary" style={{ width: '4rem', height: '4rem' }}></div>
-                    </div>
+                    <SpinLoader />
                 ) : (
-                    <div className="table-responsive">
-                        <table className="table table-striped table-hover">
-                            <thead className="thead-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Custome Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    customers.map((customer, index) => {
-                                        return (
-                                            <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.linkId}`) }}>
-                                                <td>
-                                                    <img
-                                                        src={`http://127.0.0.1:8080/${customer.thumbnailPath}`}
-                                                        className="rounded-circle" alt={customer.name}
-                                                        style={{ width: "40px", height: '40px', objectFit: "cover" }}
-                                                    />
-                                                </td>
-                                                <td className="align-middle">{customer.name}</td>
-                                                <td className="align-middle text-primary">{customer.email}</td>
-                                                <td className="align-middle">
-                                                    <p className={`badge badge-${customer.status}`}><i>{customer.status}</i></p>
-                                                </td>
-
-                                            </tr>
-                                        );
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    // If there is no customer yet, display a message
+                    !(customers === undefined || customers.length === 0) ? (
+                        <CustomerListTable customers={customers} navigate={navigate}  />
+                    ) : (
+                        <>
+                            <h3 className="text-center text-secondary">Your customers will appear here</h3>
+                            <div className="d-flex justify-content-center">
+                                <img src={waitingIllustration}  alt="illustration" />
+                            </div>
+                        </>
+                    )
+                    
                 )
             }
-            <div className="containers">
+            {/* <div className="containers">
                 <ul className="pagination justify-content-end">
                     <li className="page-item disabled"><Link className="page-link" to="#">Previous</Link></li>
                     <li className="page-item active"><Link className="page-link" to="#">1</Link></li>
                     <li className="page-item"><Link className="page-link" to="#">2</Link></li>
                     <li className="page-item"><Link className="page-link" to="#">Next</Link></li>
                 </ul>
-            </div>
+            </div> */}
         </>
     )
 }

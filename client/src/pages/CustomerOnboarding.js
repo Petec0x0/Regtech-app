@@ -10,6 +10,9 @@ import 'video.js/dist/video-js.min.css';
 // a custom font with additional icons
 import 'videojs-record/dist/css/videojs.record.css';
 import AlertMessage from 'components/AlertMessage';
+import RecordVideoFieldset from 'components/RecordVideoFieldset';
+import DocumentUploadFieldset from 'components/DocumentUploadFieldset';
+import PersonalInfoFieldset from 'components/PersonalInfoFieldset';
 
 const CustomerOnboarding = () => {
     // get customerLink Id from the url
@@ -200,7 +203,7 @@ const CustomerOnboarding = () => {
                         ) : ""
                     }
 
-                    {/* <!-- progressbar --> */}
+                    {/* <!-- progressbar for the form stages --> */}
                     <ul id="progressbar">
                         <li className={activeForms[0] ? "active" : ""}>Document Upload</li>
                         <li className={activeForms[1] ? "active" : ""}>Record Video</li>
@@ -208,80 +211,26 @@ const CustomerOnboarding = () => {
                     </ul>
                     {/* <!-- fieldsets --> */}
 
+                    <DocumentUploadFieldset 
+                        handleSelectDocument={handleSelectDocument}
+                        handleNext={handleNext} 
+                        currentStep={currentStep}
+                    />
 
-                    <fieldset style={{ display: (currentStep[0]) ? '' : 'none' }}>
-                        <h2 className="fs-title">Document Upload</h2>
-                        <h3 className="fs-subtitle">Upload an identity document(e.g Password)</h3>
-                        {/* Document selector input field */}
-                        <input
-                            onChange={handleSelectDocument}
-                            type="file"
-                            className="form-control-file border"
-                            name="document"
-                        />
-                        <input
-                            onClick={handleNext}
-                            type="button" name="next"
-                            className="next action-button" value="Next"
-                        />
-                    </fieldset>
+                    <RecordVideoFieldset 
+                        handlePrevious={handlePrevious} 
+                        handleNext={handleNext}
+                        currentStep={currentStep}
+                    />
 
-                    <fieldset style={{ display: (currentStep[1]) ? '' : 'none' }}>
-                        <h2 className="fs-title">Record Video</h2>
-                        <h3 className="fs-subtitle">Record a 5 second video of your face</h3>
-                        <video id="myVideo" playsInline className="video-js vjs-default-skin"></video>
-                        <input
-                            onClick={handlePrevious}
-                            type="button" name="previous"
-                            className="previous action-button-previous" value="Previous"
-                        />
-                        <input
-                            onClick={handleNext}
-                            type="button" name="next"
-                            className="next action-button" value="Next"
-                        />
-                    </fieldset>
-
-                    <fieldset style={{ display: (currentStep[2]) ? '' : 'none' }}>
-                        <h2 className="fs-title">Personal Information</h2>
-                        <h3 className="fs-subtitle">Fill in your credentials</h3>
-                        <input
-                            onChange={handleFormInput} value={formInputData['dateOfBirth']}
-                            onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}
-                            type="text" className="form-control" name="dateOfBirth" 
-                            placeholder="Enter Date of Birth" 
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['passportNo']}
-                            type="text" name="passportNo" placeholder="Enter Passport number"
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['nationality']}
-                            type="text" name="nationality" placeholder="Nationality"
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['countryOfResidence']}
-                            type="text" name="countryOfResidence" placeholder="Country of residence"
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['phoneNo']}
-                            type="text" name="phoneNo" placeholder="Phone number"
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['address']}
-                            type="text" name="address" placeholder="Address"
-                        />
-                        <input
-                            onChange={handleFormInput} value={formInputData['occupation']}
-                            type="text" name="occupation" placeholder="Occupation"
-                        />
-                        <input onClick={handlePrevious} type="button" name="previous" className="previous action-button-previous" value="Previous" />
-                        <input
-                            onClick={handleSubmit}
-                            type="submit" name="submit"
-                            className="submit action-button" value="Submit"
-                        />
-                    </fieldset>
+                    <PersonalInfoFieldset 
+                        handleFormInput={handleFormInput}
+                        formInputData={formInputData}
+                        handleSubmit={handleSubmit}
+                        handlePrevious={handlePrevious}
+                        currentStep={currentStep}
+                    />
+                    
                 </form>
                 {
                     // show a success alert message if onboardingSuccess
