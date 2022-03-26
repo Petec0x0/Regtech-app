@@ -22,11 +22,12 @@
   }
     
     .badge.badge-onboarded {
-      background-color: #64DD17
+      background-color: #28a745
     }
 
     .badge.badge-pending {
-      background-color: #FFD600
+      background-color: #FFD600;
+      color: #000;
     }
 
     .badge.badge-rejected {
@@ -38,8 +39,8 @@
     }
 
     .badge.badge-outlined.badge-onboarded {
-      border-color: #64DD17;
-      color: #64DD17
+      border-color: #28a745;
+      color: #28a745
     }
 
     .badge.badge-outlined.badge-pending {

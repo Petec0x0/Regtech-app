@@ -34,8 +34,8 @@ mongoose.connect(DB_HOST, {
 const db = mongoose.connection;
 
 db.on('error', (err) => {
-  console.log(err);
   console.log("PLEASE MAKE SURE YOU'RE CONNECTED TO THE INTERNET (DATABASE IS ON A REMOTE SERVER)")
+  console.log(err);
 })
 db.once('open', () => {
   console.log('Database connection established');

@@ -84,6 +84,9 @@ const OnboardCustomer = () => {
                             <div className="form-group">
                                 <input onChange={handleEmail} value={email} type="text" name="email" placeholder="Customer Email" className="form-control" />
                             </div>
+                            <div className="form-group">
+                                <input type="text" name="phoneNo" placeholder="Customer Phone Number" className="form-control" />
+                            </div>
 
                             {
                                 // show the alert message if the fields are left empty

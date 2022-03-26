@@ -124,8 +124,8 @@ const getOneCustomer = async (req, res, next) => {
      */
     // find the authenticated user
     const user = res.locals.user;
-    console.log({ client: user._id, linkId: req.params.linkId });
     try {
+        let customer = await Customer.findOne({ client: user._id, linkId: req.params.linkId });
         // send 404 response when a customer is not found
         if(!customer){
             return res.status(404).json({
@@ -146,4 +146,30 @@ const getOneCustomer = async (req, res, next) => {
     }
 }
 
-module.exports = { onboardCustomer, getCustomers, getOneCustomer };
+const updateCustomerStatus = async (req, res, next) => {
+    /**
+     * This contorller updates the status of 
+     * a customer to either onboarded or rejected
+     */
+
+     const user = res.locals.user;
+     try {
+         let customer = await Customer.findOne({ client: user._id, linkId: req.body.linkId });
+         // update
+         customer.status = req.body.status;
+         customer.save();
+
+         res.json({
+             data: customer,
+             error: false
+         })
+     } catch (err) {
+         console.log(err);
+         return res.json({
+             message: 'An error occured',
+             error: true
+         })
+     }
+}
+
+module.exports = { onboardCustomer, getCustomers, getOneCustomer, updateCustomerStatus };
