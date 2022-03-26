@@ -15,7 +15,7 @@ const CustomerListTable = ({ customers, navigate }) => {
                 <tbody>
                     {
                         customers.map((customer, index) => {
-                            if (cutomer.phoneNo) {
+                            if (customer.phoneNo) {
                                 return (
                                     <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.linkId}`) }}>
                                         <td>
