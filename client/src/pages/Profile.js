@@ -19,6 +19,10 @@ const Profile = () => {
         (async () => {
             const rawResponse = await fetch(`/api/customer/${customersId}`, {
                 method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
             });
             const content = await rawResponse.json();
             const status = rawResponse.status;

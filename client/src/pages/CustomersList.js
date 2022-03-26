@@ -15,6 +15,10 @@ const CustomersList = () => {
         (async () => {
             const rawResponse = await fetch('/api/customer', {
                 method: 'GET',
+                headers : { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                   }
             });
             const content = await rawResponse.json();
             const status = rawResponse.status;
