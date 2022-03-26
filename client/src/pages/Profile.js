@@ -69,7 +69,7 @@ const Profile = () => {
                             <div className="col-md-3 col-sm-3 col-xs-12 user-profil-part pull-left">
                                 <div className="row ">
                                     <div className="col-md-12 col-md-12-sm-12 col-xs-12 user-image text-center">
-                                        <img src={`http://127.0.0.1:8080/${customer.thumbnailPath}`} alt="Profile Pic" className="rounded-circle" />
+                                        <img src={`https://regtech-meduim.herokuapp.com/${customer.thumbnailPath}`} alt="Profile Pic" className="rounded-circle" />
                                     </div>
                                 </div>
                             </div>
@@ -150,12 +150,12 @@ const Profile = () => {
                                 </div>
                                 <div id="files" className={'container tab-pane'+ (currenTab.files ? ' active':'')}><br />
                                     <div className="pb-4">
-                                        <a href={`http://127.0.0.1:8080/${customer.documentPath}`} target="_blank"  rel="noopener noreferrer">
+                                        <a href={`https://regtech-meduim.herokuapp.com/${customer.documentPath}`} target="_blank"  rel="noopener noreferrer">
                                             <FileEarmarkText /> <strong>Uploaded document</strong>
                                         </a>
                                     </div>
                                     <div>
-                                        <a href={`http://127.0.0.1:8080/${customer.videoPath}`} target="_blank" rel="noopener noreferrer">
+                                        <a href={`https://regtech-meduim.herokuapp.com/${customer.videoPath}`} target="_blank" rel="noopener noreferrer">
                                             <Film /> <strong>Recorded Video</strong>
                                         </a>
                                     </div>

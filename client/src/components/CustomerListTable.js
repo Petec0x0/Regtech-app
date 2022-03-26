@@ -19,7 +19,7 @@ const CustomerListTable = ({customers, navigate}) => {
                                 <tr key={index} onClick={() => { navigate(`/dashboard/customers/${customer.linkId}`) }}>
                                     <td>
                                         <img
-                                            src={`http://127.0.0.1:8080/${customer.thumbnailPath}`}
+                                            src={`https://regtech-meduim.herokuapp.com/${customer.thumbnailPath}`}
                                             className="rounded-circle" alt={customer.name}
                                             style={{ width: "40px", height: '40px', objectFit: "cover" }}
                                         />
