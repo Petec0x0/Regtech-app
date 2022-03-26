@@ -13,34 +13,25 @@ const CustomersList = () => {
     useEffect(() => {
         // send a post request to the server to fetch customers
         (async () => {
-            try {
-                const rawResponse = await fetch('/api/customer', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-                const content = await rawResponse.json();
-                const status = rawResponse.status;
-                // Redirect the user to login page if status == 401
-                if (status === 401) {
-                    // redirect to login page
-                    navigate("/login");
-                }
-                // check if there is an error in the response
-                if (content.error) {
-                    alert(content.message);
-                } else {
-                    // update customers
-                    setCustomers([...content.data])
-                    // stop the progress bar
-                    setIsDataReady(true);
-                }
-            } catch (err) {
-                console.log(err)
+            const rawResponse = await fetch('/api/customer', {
+                method: 'GET',
+            });
+            const content = await rawResponse.json();
+            const status = rawResponse.status;
+            // Redirect the user to login page if status == 401
+            if (status === 401) {
+                // redirect to login page
+                navigate("/login");
             }
-
+            // check if there is an error in the response
+            if (content.error) {
+                alert(content.message);
+            } else {
+                // update customers
+                setCustomers([...content.data])
+                // stop the progress bar
+                setIsDataReady(true);
+            }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -57,16 +48,16 @@ const CustomersList = () => {
                 ) : (
                     // If there is no customer yet, display a message
                     !(customers === undefined || customers.length === 0) ? (
-                        <CustomerListTable customers={customers} navigate={navigate} />
+                        <CustomerListTable customers={customers} navigate={navigate}  />
                     ) : (
                         <>
                             <h3 className="text-center text-secondary">Your customers will appear here</h3>
                             <div className="d-flex justify-content-center">
-                                <img src={waitingIllustration} alt="illustration" />
+                                <img src={waitingIllustration}  alt="illustration" />
                             </div>
                         </>
                     )
-
+                    
                 )
             }
             {/* <div className="containers">
