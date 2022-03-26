@@ -25,6 +25,9 @@ app.use(express.static(path.resolve(__dirname, "../client/build")));
 // make a directory accessible as a public dir
 app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
+// Increse file upload limit size
+app.use(bodyParser.json());
+app.use(bodyParser({limit: '50mb'}));
 
 // Database connection
 // Store the DB_HOST value as a variable
