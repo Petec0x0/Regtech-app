@@ -160,10 +160,6 @@ const CustomerOnboarding = () => {
                 (async () => {
                     const rawResponse = await fetch('/api/onboarding/upload', {
                         method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
                         body: formData
                     });
                     const content = await rawResponse.json();
