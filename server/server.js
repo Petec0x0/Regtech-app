@@ -20,11 +20,10 @@ const app = express();
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-// parse requests of content-type - application/json
-app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+// // parse requests of content-type - application/json
+// app.use(express.json());
+// // parse requests of content-type - application/x-www-form-urlencoded
+// app.use(express.urlencoded({ extended: true }));
 // middleware for parsing cookie from the request
 app.use(cookieParser());
 //When you navigate to the root page, it would use the built react-app
