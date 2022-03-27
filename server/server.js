@@ -17,7 +17,7 @@ const app = express();
 // app.use(cors(corsOptions));
 
 // Increse file upload limit size
-app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb', strict: false}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // // parse requests of content-type - application/json
