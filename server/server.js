@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+var bodyParser = require('body-parser')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
@@ -15,8 +16,14 @@ const app = express();
 //   origin: "http://localhost:8081"
 // };
 // app.use(cors(corsOptions));
+
+// Increse file upload limit size
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
 // parse requests of content-type - application/json
 app.use(express.json());
+
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 // middleware for parsing cookie from the request
@@ -26,9 +33,7 @@ app.use(express.static(path.resolve(__dirname, "../client/build")));
 // make a directory accessible as a public dir
 app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
-// Increse file upload limit size
-app.use(express.bodyParser({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+
 
 // Database connection
 // Store the DB_HOST value as a variable
