@@ -7,6 +7,10 @@ const PersonalInfoFieldset = ({handleFormInput, formInputData, handleSubmit, han
                 <h2 className="fs-title">Personal Information</h2>
                 <h3 className="fs-subtitle">Fill in your credentials</h3>
                 <input
+                    onChange={handleFormInput} value={formInputData['name']}
+                    type="text" name="name" placeholder="Enter Full Name"
+                />
+                <input
                     onChange={handleFormInput} value={formInputData['dateOfBirth']}
                     onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}
                     type="text" className="form-control" name="dateOfBirth"

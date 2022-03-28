@@ -13,10 +13,30 @@ import AlertMessage from 'components/AlertMessage';
 import RecordVideoFieldset from 'components/RecordVideoFieldset';
 import DocumentUploadFieldset from 'components/DocumentUploadFieldset';
 import PersonalInfoFieldset from 'components/PersonalInfoFieldset';
+import { dataFromImage } from 'utils/dataFromImage';
+
 
 const CustomerOnboarding = () => {
     // get customerLink Id from the url
     const { customerLink } = useParams();
+
+    //State for storing recorded video
+    const [videoFile, setVideoFile] = useState(null);
+    // creating states for organizing diffrent 
+    // steps of the customer-oboarding form
+    const [currentStep, setCurrentStep] = useState([1, 0, 0]);
+    const [activeForms, setActiveForm] = useState([1]);
+    // states for storing form data
+    const [formInputData, setFormInputData] = useState({
+        name: '', dateOfBirth: '', passportNo: '', nationality: '',
+        countryOfResidence: '', phoneNo: '', address: '', occupation: ''
+    });
+    const [selectedDocument, setSelectedDocument] = useState(null);
+    // States for checking the errors
+    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState(false);
+    const [errorMsg, setErroMsg] = useState("");
+    const [onboardingSuccess, setOnboardingSuccess] = useState(false);
 
     let options = {
         // video.js options
@@ -29,7 +49,7 @@ const CustomerOnboarding = () => {
         plugins: {
             // videojs-record plugin options
             record: {
-                audio: true,
+                audio: false,
                 video: true,
                 maxLength: 5,
                 displayMilliseconds: true,
@@ -38,8 +58,6 @@ const CustomerOnboarding = () => {
         }
     };
 
-    //State for storing recorded video
-    const [videoFile, setVideoFile] = useState(null);
     useEffect(() => {
         // Initialize the video plugin when the page is fully loaded
         let player = videojs('myVideo', options, function () {
@@ -59,12 +77,8 @@ const CustomerOnboarding = () => {
             // show save as dialog
             //player.record().saveAs({'video': 'my-video-file-name.webm'});
         });
-    })
-
-    // creating states for organizing diffrent 
-    // steps of the customer-oboarding form
-    const [currentStep, setCurrentStep] = useState([1, 0, 0]);
-    const [activeForms, setActiveForm] = useState([1]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     // A function for rearranging array elements used 
     // for keeping track of the current form (forget about how it works)
@@ -96,15 +110,6 @@ const CustomerOnboarding = () => {
         setActiveForm([...activeForms]);
     }
 
-    // states for storing for data
-    const [formInputData, setFormInputData] = useState({});
-    const [selectedDocument, setSelectedDocument] = useState(null);
-    // States for checking the errors
-    const [submitted, setSubmitted] = useState(false);
-    const [error, setError] = useState(false);
-    const [errorMsg, setErroMsg] = useState("");
-    const [onboardingSuccess, setOnboardingSuccess] = useState(false);
-
     const handleFormInput = (e) => {
         setFormInputData({
             ...formInputData,
@@ -112,27 +117,39 @@ const CustomerOnboarding = () => {
         })
     }
 
-    const handleSelectDocument = (e) => {
+    const handleSelectDocument = async (e) => {
         // handle validations
         let file = e.target.files[0];
         setSelectedDocument(file);
         setSubmitted(false);
+        /**
+         * Update the form form fields based 
+         * on data extracted from the uploaded document
+         *  */ 
+        const dataExtracts = await dataFromImage(file);
+        if(dataExtracts){
+            console.log(dataExtracts);
+            console.log('DONE!')
+        }
+        
+        setFormInputData({
+            ...formInputData,
+            ...dataExtracts
+        })
     }
 
     // Handling the form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         // make sure none of the inputs is empty
-        const isAvailable = (('dateOfBirth' in formInputData) && ('passportNo' in formInputData) &&
-            ('nationality' in formInputData) && ('countryOfResidence' in formInputData) &&
-            ('phoneNo' in formInputData) && ('address' in formInputData) && ('occupation' in formInputData))
         const isAnyFromEmpty = Object.values(formInputData).every(x => x === null || x === '');
-        if (isAnyFromEmpty || !isAvailable) {
+        if (isAnyFromEmpty) {
             setErroMsg("Please fill all the required fields");
             setError(true);
         } else {
             /**
-             * make sure a document was uploaded a video was recorded
+             * make sure a document was uploaded and
+             * a video was recorded
              */
             // 
             if ((Object.keys(videoFile).length === 0)) {
