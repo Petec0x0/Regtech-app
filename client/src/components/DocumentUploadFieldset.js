@@ -26,8 +26,8 @@ const DocumentUploadFieldset = ({ isDocProcessing, docProcessingMsg, handleSelec
                     {
                         // show processing message if it is not empty
                         (docProcessingMsg) ? (
-                            <div className="alert alert-success" role="alert">
-                                {docProcessingMsg}
+                            <div className={`alert alert-${docProcessingMsg.category}`}  role="alert">
+                                {docProcessingMsg.message}
                             </div>
                         ) : ''
                     }

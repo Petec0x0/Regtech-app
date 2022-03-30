@@ -12,7 +12,7 @@ const Profile = () => {
     let navigate = useNavigate();
     const [isDataReady, setIsDataReady] = useState(false);
     const [customer, setCustomer] = useState({});
-    const [currenTab, setCurrentTab] = useState({info: true, files: false});
+    const [currenTab, setCurrentTab] = useState({ info: true, files: false });
 
     useEffect(() => {
         // send a post request to the server to fetch customers
@@ -30,7 +30,7 @@ const Profile = () => {
             if (status === 401) {
                 // redirect to login page
                 navigate("/login");
-            }else if(status === 404){
+            } else if (status === 404) {
                 // redirect to 404 page
                 navigate("/404CustomerNotFound");
             }
@@ -46,9 +46,9 @@ const Profile = () => {
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    
+
     const switchTab = () => {
-        setCurrentTab({info: !currenTab.info, files: !currenTab.files})
+        setCurrentTab({ info: !currenTab.info, files: !currenTab.files })
     }
 
     const dateOfBirth = new Date(customer.dateOfBirth);
@@ -77,24 +77,24 @@ const Profile = () => {
                         <div className="col-md-12 d-flex justify-content-end">
                             <AcceptButton linkId={customer.linkId} navigate={navigate} />
                             <RejectButton linkId={customer.linkId} navigate={navigate} />
-                            
+
                         </div>
                         <div className="container mt-2">
                             {/* <!-- Nav tabs --> */}
                             <ul className="nav nav-tabs" role="tablist">
                                 <li className="nav-item">
-                                    <a 
+                                    <a
                                         onClick={switchTab}
-                                        className={'nav-link'+ (currenTab.info ? ' active':'')} 
+                                        className={'nav-link' + (currenTab.info ? ' active' : '')}
                                         href="#personal"
                                     >
                                         Personal Info
                                     </a>
                                 </li>
                                 <li className="nav-item">
-                                    <a 
-                                        onClick={switchTab} 
-                                        className={'nav-link'+ (currenTab.files ? ' active':'')} 
+                                    <a
+                                        onClick={switchTab}
+                                        className={'nav-link' + (currenTab.files ? ' active' : '')}
                                         href="#files"
                                     >
                                         Docs/Files
@@ -104,7 +104,7 @@ const Profile = () => {
 
                             {/* <!-- Tab panes --> */}
                             <div className="tab-content">
-                                <div id="personal" className={'container tab-pane'+ (currenTab.info ? ' active':'')}><br />
+                                <div id="personal" className={'container tab-pane' + (currenTab.info ? ' active' : '')}><br />
                                     <table className="table table-striped">
                                         <tbody>
                                             <tr>
@@ -148,16 +148,25 @@ const Profile = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div id="files" className={'container tab-pane'+ (currenTab.files ? ' active':'')}><br />
+                                <div id="files" className={'container tab-pane' + (currenTab.files ? ' active' : '')}><br />
                                     <div className="pb-4">
-                                        <a href={`http://127.0.0.1:8080/${customer.documentPath}`} target="_blank"  rel="noopener noreferrer">
+                                        <a href={`http://127.0.0.1:8080/${customer.documentPath}`} target="_blank" rel="noopener noreferrer">
                                             <FileEarmarkText /> <strong>Uploaded document</strong>
                                         </a>
+                                        <div className="mt-2">
+                                            <img src={`http://127.0.0.1:8080/${customer.documentPath}`} alt="Uploaded Document" />
+                                        </div>
                                     </div>
                                     <div>
                                         <a href={`http://127.0.0.1:8080/${customer.videoPath}`} target="_blank" rel="noopener noreferrer">
                                             <Film /> <strong>Recorded Video</strong>
                                         </a>
+                                        <div className="mt-2">
+                                            <video width="320" height="240" controls>
+                                                <source src={`http://127.0.0.1:8080/${customer.videoPath}`} type="video/webm" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

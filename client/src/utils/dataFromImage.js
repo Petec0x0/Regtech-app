@@ -32,10 +32,12 @@ export const dataFromImage = async (imageUrl) => {
      */
     const dob = parsed.date_of_birth;
     const newDob = new Date(dob.slice(0, 2), dob.slice(2, 4), dob.slice(4, 6));
+    const monthValid = new Date('0000', dob.slice(2, 4)).getFullYear();
+    const dayValid = new Date('0000', dob.slice(4, 6)).getFullYear();
     console.log()
     return {
       name: parsed.names, 
-      dateOfBirth: `${(newDob.getFullYear()) ? newDob.getFullYear() : dob.slice(0, 2)}-${dob.slice(2, 4)}-${dob.slice(4, 6)}`, 
+      dateOfBirth: `${(newDob.getFullYear()) ? newDob.getFullYear() : '0000'}-${(monthValid) ? dob.slice(2, 4) : '01'}-${(dayValid) ? dob.slice(4, 6) : '01'}`, 
       passportNo: parsed.number, 
       nationality: parsed.country
     };

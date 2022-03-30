@@ -9,6 +9,7 @@ const CustomerListTable = ({ customers, navigate }) => {
                         <th>#</th>
                         <th>Custome Name</th>
                         <th>Email</th>
+                        <th>Validation</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -27,6 +28,9 @@ const CustomerListTable = ({ customers, navigate }) => {
                                         </td>
                                         <td className="align-middle">{customer.name}</td>
                                         <td className="align-middle text-primary">{customer.email}</td>
+                                        <td className={`align-middle text-${customer.validaition >= 50 ? 'success' : 'danger'}`}>
+                                            {customer.validaition}
+                                        </td>
                                         <td className="align-middle">
                                             <p className={`badge badge-${customer.status}`}><i>{customer.status}</i></p>
                                         </td>

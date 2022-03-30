@@ -1,7 +1,7 @@
 # iwu-aku
 "Topcoder Skill Builder Competition | FinTech" solution. 
 
-For the deployed version of this project visit [Regtech-medium](https://regtech-meduim.herokuapp.com/)
+For the deployed version of this project visit [Regtech-hard](https://regtech-hard.herokuapp.com/)
 
 ### How to run this project locally
 

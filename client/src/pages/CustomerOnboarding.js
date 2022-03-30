@@ -53,7 +53,7 @@ const CustomerOnboarding = () => {
     const [onboardingSuccess, setOnboardingSuccess] = useState(false);
     const [videoSource, setVideoSource] = useState(require('images/placeholder.webm'));
     const [isDocProcessing, setIsDocProcessing] = useState(false);
-    const [docProcessingMsg, setDocProcessingMsg] = useState('');
+    const [docProcessingMsg, setDocProcessingMsg] = useState({});
     const [isVidProcessing, setIsVidProcessing] = useState(false);
     const [vidProcessingMsg, setVidProcessingMsg] = useState({});
     const [faceComparePercentage, setFaceComparePercentage] = useState(0);
@@ -186,8 +186,9 @@ const CustomerOnboarding = () => {
                 // Using Euclidean distance to comapare face descriptions
                 const distance = faceapi.euclideanDistance(docFaceDetection.current.descriptor, vidFaceDetection.current.descriptor);
                 setIsVidProcessing(false);
-                setVidProcessingMsg({message: `Validation: ${Math.round(100-(distance*10))}%`, category: 'success'});
-                setFaceComparePercentage(Math.round(100-(distance*10)));
+                setVidProcessingMsg({message: `Validation: ${Math.round(100-(distance*100))}%`, category: 'success'});
+                setFaceComparePercentage(Math.round(100-(distance*100)));
+                console.log(distance);
             }
         }
 
@@ -233,7 +234,7 @@ const CustomerOnboarding = () => {
 
     const handleSelectDocument = async (e) => {
         setIsDocProcessing(true);
-        setDocProcessingMsg('Extracting data from document, \n please wait.');
+        setDocProcessingMsg({message: 'Extracting data from document, please wait.', category: 'primary'});
         // handle validations
         let file = e.target.files[0];
         setSelectedDocument(file);
@@ -244,7 +245,7 @@ const CustomerOnboarding = () => {
          *  */
         const dataExtracts = await dataFromImage(file);
         if (dataExtracts) {
-            setDocProcessingMsg('Data extracted!');
+            setDocProcessingMsg({message: 'Data extracted!', category: 'primary'});
             console.log(dataExtracts);
             console.log('DONE!');
         }
@@ -254,7 +255,7 @@ const CustomerOnboarding = () => {
             ...dataExtracts
         })
         // Get face from the uploaded document
-        setDocProcessingMsg('Getting face from the uploaded document!');
+        setDocProcessingMsg({message: 'Extracting face from the uploaded document!', category: 'primary'});
         // load Models
         await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
         await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
@@ -272,11 +273,18 @@ const CustomerOnboarding = () => {
          */
         docFaceDetection.current = await faceapi.detectSingleFace(docImageRef.current, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks().withFaceDescriptor();
+
+        // If no face is detected, end the process and return a message
+        if(!docFaceDetection.current){
+            setIsDocProcessing(false);
+            setDocProcessingMsg({message: 'Face detection failed, try again', category: 'danger'});
+            return;
+        }
         console.log(docFaceDetection.current);
         const { x, y, width, height } = docFaceDetection.current.detection.box;
         extractFace(docImageRef.current, x, y, width, height);
 
-        setDocProcessingMsg('Face extracted! Move to the next step');
+        setDocProcessingMsg({message: 'Face extracted! Move to the next step', category: 'success'});
         setIsDocProcessing(false);
 
     }
