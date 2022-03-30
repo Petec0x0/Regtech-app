@@ -53,6 +53,10 @@ const customerSchema = new mongoose.Schema(
         },
         dateOfBirth: {
             type: Date
+        },
+        validaition: {
+            type: Number,
+            default: 0
         }
 
     },

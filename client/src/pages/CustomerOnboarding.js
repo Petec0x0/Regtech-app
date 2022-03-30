@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import 'styles/customer-onboarding.css';
 // VideoJs plugin
 import videojs from 'video.js';
+// eslint-disable-next-line
 import RecordRTC from 'recordrtc';
+// eslint-disable-next-line
 import Record from 'videojs-record/dist/videojs.record.js';
 import 'video.js/dist/video-js.min.css';
 // The extra stylesheet for the plugin that includes 
@@ -14,11 +16,23 @@ import RecordVideoFieldset from 'components/RecordVideoFieldset';
 import DocumentUploadFieldset from 'components/DocumentUploadFieldset';
 import PersonalInfoFieldset from 'components/PersonalInfoFieldset';
 import { dataFromImage } from 'utils/dataFromImage';
+import * as faceapi from 'face-api.js';
 
 
 const CustomerOnboarding = () => {
     // get customerLink Id from the url
     const { customerLink } = useParams();
+    // reference to the video element
+    const videoRef = useRef();
+    const imageCanvasRef = useRef();
+    const docImageRef = useRef();
+    const isFirstRender = useRef(true);
+    /**
+     * create variable for face detection 
+     * from both the uploaded document and recorded video
+     */
+    let vidFaceDetection = useRef();
+    let docFaceDetection = useRef();
 
     //State for storing recorded video
     const [videoFile, setVideoFile] = useState(null);
@@ -37,6 +51,13 @@ const CustomerOnboarding = () => {
     const [error, setError] = useState(false);
     const [errorMsg, setErroMsg] = useState("");
     const [onboardingSuccess, setOnboardingSuccess] = useState(false);
+    const [videoSource, setVideoSource] = useState(require('images/placeholder.webm'));
+    const [isDocProcessing, setIsDocProcessing] = useState(false);
+    const [docProcessingMsg, setDocProcessingMsg] = useState('');
+    const [isVidProcessing, setIsVidProcessing] = useState(false);
+    const [vidProcessingMsg, setVidProcessingMsg] = useState({});
+    const [faceComparePercentage, setFaceComparePercentage] = useState(0);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
 
     let options = {
         // video.js options
@@ -58,6 +79,18 @@ const CustomerOnboarding = () => {
         }
     };
 
+    const extractFace = async (image, x, y, width, height) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+        // Get a screenshot from the video
+        context?.drawImage(image, x, y, width, height, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+            image.src = URL.createObjectURL(blob);
+        }, "image/jpeg");
+    };
+
     useEffect(() => {
         // Initialize the video plugin when the page is fully loaded
         let player = videojs('myVideo', options, function () {
@@ -69,16 +102,97 @@ const CustomerOnboarding = () => {
             console.log("videojs-record is ready!");
         });
 
-        player.on('finishRecord', () => {
+        player.on('finishRecord', async () => {
+            setIsVidProcessing(true);
+            setVidProcessingMsg({message: 'Processing...', category: 'primary'});
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('finished recording: ', player.recordedData);
-            setVideoFile(player.recordedData)
+            setVideoFile(player.recordedData);
+            // convert recorded video to image
+            // videoRef.current.src = await URL.createObjectURL(player.recordedData);
+            // videoRef.current?.load();
             // show save as dialog
+            const videoToImageVid = document.createElement('video');
+            videoToImageVid.src = URL.createObjectURL(player.recordedData);
+            videoToImageVid.autoplay = true;
+            /**
+             * using setInterval for actively listening to when the 
+             * readyState of the video changes by checking every one-second until it loads in.
+             */
+            var b = setInterval(async ()=>{
+                console.log(videoToImageVid.readyState >= 3);
+                if(videoToImageVid.readyState >= 3){
+                    //This block of code is triggered when the video is loaded
+                    const canvas = document.createElement("canvas");
+                    // scale the canvas accordingly
+                    canvas.width = await videoRef.current.videoWidth;
+                    canvas.height = await videoRef.current.videoHeight;
+                    // draw the video at that frame
+
+                    await canvas.getContext('2d')
+                        .drawImage(videoToImageVid, 0, 0, canvas.width, canvas.height);
+
+                    // convert it to a usable data URL
+                    imageCanvasRef.current.src = await canvas.toDataURL();
+                    canvas.toBlob((blob) => {
+                        setThumbnailFile(blob);
+                    }, "image/jpeg");
+                    
+        
+                    //stop checking every half second
+                    clearInterval(b);
+                    setVideoSource(URL.createObjectURL(player.recordedData));
+                }                   
+            },1000);
+
+            
             //player.record().saveAs({'video': 'my-video-file-name.webm'});
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        // Prevent the function from executing on the first render
+        if (isFirstRender.current) {
+            isFirstRender.current = false; // toggle flag after first render/mounting
+            return;
+        }
+        async function doFaceDetection() {
+            await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+            await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+
+
+            console.log(imageCanvasRef.current);
+            vidFaceDetection.current = await faceapi.detectSingleFace(imageCanvasRef.current, new faceapi.TinyFaceDetectorOptions())
+                .withFaceLandmarks().withFaceDescriptor();
+
+            // If no face is detected, end the process and return a message
+            if(!vidFaceDetection.current){
+                setIsVidProcessing(false);
+                setVidProcessingMsg({message: 'Face detection failed, try again', category: 'danger'});
+                return;
+            }
+
+            console.log(vidFaceDetection.current);
+            const { x, y, width, height } = vidFaceDetection.current.detection.box;
+            extractFace(imageCanvasRef.current, x, y, width, height);
+
+            if (docFaceDetection.current && vidFaceDetection.current) {
+                setVidProcessingMsg({message: 'Face detected, comparing faces...', category: 'primary'});
+                // Using Euclidean distance to comapare face descriptions
+                const distance = faceapi.euclideanDistance(docFaceDetection.current.descriptor, vidFaceDetection.current.descriptor);
+                setIsVidProcessing(false);
+                setVidProcessingMsg({message: `Validation: ${Math.round(100-(distance*10))}%`, category: 'success'});
+                setFaceComparePercentage(Math.round(100-(distance*10)));
+            }
+        }
+
+        doFaceDetection();
+    }, [videoSource])
 
     // A function for rearranging array elements used 
     // for keeping track of the current form (forget about how it works)
@@ -118,6 +232,8 @@ const CustomerOnboarding = () => {
     }
 
     const handleSelectDocument = async (e) => {
+        setIsDocProcessing(true);
+        setDocProcessingMsg('Extracting data from document, \n please wait.');
         // handle validations
         let file = e.target.files[0];
         setSelectedDocument(file);
@@ -125,17 +241,44 @@ const CustomerOnboarding = () => {
         /**
          * Update the form form fields based 
          * on data extracted from the uploaded document
-         *  */ 
+         *  */
         const dataExtracts = await dataFromImage(file);
-        if(dataExtracts){
+        if (dataExtracts) {
+            setDocProcessingMsg('Data extracted!');
             console.log(dataExtracts);
-            console.log('DONE!')
+            console.log('DONE!');
         }
-        
+
         setFormInputData({
             ...formInputData,
             ...dataExtracts
         })
+        // Get face from the uploaded document
+        setDocProcessingMsg('Getting face from the uploaded document!');
+        // load Models
+        await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+        await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+        await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+        await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+        /**
+         * convert selected document to object url and assign 
+         * it to the image placeholder designated for it
+         */
+        docImageRef.current.src = URL.createObjectURL(file);
+        /**
+         * using face-api-js to find face description form 
+         * the uploaded document
+         */
+        docFaceDetection.current = await faceapi.detectSingleFace(docImageRef.current, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks().withFaceDescriptor();
+        console.log(docFaceDetection.current);
+        const { x, y, width, height } = docFaceDetection.current.detection.box;
+        extractFace(docImageRef.current, x, y, width, height);
+
+        setDocProcessingMsg('Face extracted! Move to the next step');
+        setIsDocProcessing(false);
+
     }
 
     // Handling the form submission
@@ -166,8 +309,12 @@ const CustomerOnboarding = () => {
                 formData.append('document', selectedDocument);
                 // append the recorded video to the form data
                 formData.append('video', videoFile, videoFile.name);
+                // append captured image to the form data
+                formData.append('thumbnail', thumbnailFile);
                 // append customerLink to the form data
                 formData.append('linkId', customerLink);
+                // apend validation percentage
+                formData.append('validaition', faceComparePercentage);
                 // append the rest of the form input data
                 Object.keys(formInputData).map((key, index) => {
                     return formData.append(key, formInputData[key]);
@@ -227,26 +374,36 @@ const CustomerOnboarding = () => {
                     </ul>
                     {/* <!-- fieldsets --> */}
 
-                    <DocumentUploadFieldset 
+                    <DocumentUploadFieldset
+                        isDocProcessing={isDocProcessing}
+                        docProcessingMsg={docProcessingMsg}
                         handleSelectDocument={handleSelectDocument}
-                        handleNext={handleNext} 
-                        currentStep={currentStep}
-                    />
-
-                    <RecordVideoFieldset 
-                        handlePrevious={handlePrevious} 
                         handleNext={handleNext}
                         currentStep={currentStep}
                     />
 
-                    <PersonalInfoFieldset 
+                    <RecordVideoFieldset
+                        isVidProcessing={isVidProcessing}
+                        vidProcessingMsg={vidProcessingMsg}
+                        handlePrevious={handlePrevious}
+                        handleNext={handleNext}
+                        currentStep={currentStep}
+                    />
+
+                    <PersonalInfoFieldset
                         handleFormInput={handleFormInput}
                         formInputData={formInputData}
                         handleSubmit={handleSubmit}
                         handlePrevious={handlePrevious}
                         currentStep={currentStep}
                     />
-                    
+
+                    <img style={{ visibility: 'hidden' }} id="documentToImagePlaceholder" ref={docImageRef} src={require('images/placeholder.png')} alt="Document Placeholder" />
+                    <img style={{ visibility: 'hidden' }} id="videoToImagePlaceholder" ref={imageCanvasRef} src={require('images/placeholder.png')} alt="Canvas" />
+                    <video style={{ visibility: 'hidden' }} ref={videoRef} key={videoSource} width="320" height="240" controls>
+                        <source src={videoSource} type="video/mp4" />
+                    </video>
+
                 </form>
                 {
                     // show a success alert message if onboardingSuccess

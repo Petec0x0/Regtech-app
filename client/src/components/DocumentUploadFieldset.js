@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DocumentUploadFieldset = ({ handleSelectDocument, handleNext, currentStep }) => {
+const DocumentUploadFieldset = ({ isDocProcessing, docProcessingMsg, handleSelectDocument, handleNext, currentStep }) => {
     return (
         <>
             <fieldset style={{ display: (currentStep[0]) ? '' : 'none' }}>
@@ -13,6 +13,26 @@ const DocumentUploadFieldset = ({ handleSelectDocument, handleNext, currentStep 
                     className="form-control-file border"
                     name="document"
                 />
+
+                <div>
+                    {
+                        // show the spinner if the document is being processed
+                        (isDocProcessing) ? (
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        ) : ''
+                    }
+                    {
+                        // show processing message if it is not empty
+                        (docProcessingMsg) ? (
+                            <div className="alert alert-success" role="alert">
+                                {docProcessingMsg}
+                            </div>
+                        ) : ''
+                    }
+                </div>
+
                 <input
                     onClick={handleNext}
                     type="button" name="next"

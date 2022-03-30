@@ -7,8 +7,10 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         if(file.fieldname == 'document'){
             cb(null, './uploads/docs/');
-        }else{
+        }else if(file.fieldname == 'video'){
             cb(null, './uploads/videos/');
+        }else{
+            cb(null, './uploads/thumbnails/');
         }
     },
     filename: function (req, file, cb) {
@@ -24,7 +26,8 @@ const upload = multer({
 
 const cpUpload = upload.fields([
     { name: 'document', maxCount: 1 }, 
-    { name: 'video', maxCount: 1 }
+    { name: 'video', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 }
 ]);
 router.post("/upload", cpUpload, async (req, res, next) => {
     /**
@@ -43,6 +46,7 @@ router.post("/upload", cpUpload, async (req, res, next) => {
          }
          customer.documentPath = req.files['document'][0]['path'];
          customer.videoPath = req.files['video'][0]['path'];
+         customer.thumbnailPath = req.files['thumbnail'][0]['path'];
          customer.passportNo = req.body.passportNo;
          customer.nationality = req.body.nationality;
          customer.countryOfResidence = req.body.countryOfResidence;
@@ -50,6 +54,8 @@ router.post("/upload", cpUpload, async (req, res, next) => {
          customer.address = req.body.address;
          customer.occupation = req.body.occupation;
          customer.dateOfBirth = req.body.dateOfBirth;
+         customer.name = req.body.name;
+         customer.validaition = req.body.validaition;
          customer.save();
 
         res.status(201).json({
