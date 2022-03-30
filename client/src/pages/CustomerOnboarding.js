@@ -53,7 +53,8 @@ const CustomerOnboarding = () => {
     const [onboardingSuccess, setOnboardingSuccess] = useState(false);
     const [videoSource, setVideoSource] = useState(require('images/placeholder.webm'));
     const [isDocProcessing, setIsDocProcessing] = useState(false);
-    const [docProcessingMsg, setDocProcessingMsg] = useState({});
+    const [docProcessingMsg1, setDocProcessingMsg1] = useState({});
+    const [docProcessingMsg2, setDocProcessingMsg2] = useState({});
     const [isVidProcessing, setIsVidProcessing] = useState(false);
     const [vidProcessingMsg, setVidProcessingMsg] = useState({});
     const [faceComparePercentage, setFaceComparePercentage] = useState(0);
@@ -234,7 +235,7 @@ const CustomerOnboarding = () => {
 
     const handleSelectDocument = async (e) => {
         setIsDocProcessing(true);
-        setDocProcessingMsg({message: 'Extracting data from document, please wait.', category: 'primary'});
+        setDocProcessingMsg1({message: 'Extracting data from document, please wait.', category: 'primary'});
         // handle validations
         let file = e.target.files[0];
         setSelectedDocument(file);
@@ -245,7 +246,7 @@ const CustomerOnboarding = () => {
          *  */
         const dataExtracts = await dataFromImage(file);
         if (dataExtracts) {
-            setDocProcessingMsg({message: 'Data extracted!', category: 'primary'});
+            setDocProcessingMsg1({message: 'Data extracted!', category: 'success'});
             console.log(dataExtracts);
             console.log('DONE!');
         }
@@ -255,7 +256,7 @@ const CustomerOnboarding = () => {
             ...dataExtracts
         })
         // Get face from the uploaded document
-        setDocProcessingMsg({message: 'Extracting face from the uploaded document!', category: 'primary'});
+        setDocProcessingMsg2({message: 'Extracting face from the uploaded document!', category: 'primary'});
         // load Models
         await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
         await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
@@ -277,14 +278,14 @@ const CustomerOnboarding = () => {
         // If no face is detected, end the process and return a message
         if(!docFaceDetection.current){
             setIsDocProcessing(false);
-            setDocProcessingMsg({message: 'Face detection failed, try again', category: 'danger'});
+            setDocProcessingMsg2({message: 'Face detection failed, try again', category: 'danger'});
             return;
         }
         console.log(docFaceDetection.current);
         const { x, y, width, height } = docFaceDetection.current.detection.box;
         extractFace(docImageRef.current, x, y, width, height);
 
-        setDocProcessingMsg({message: 'Face extracted! Move to the next step', category: 'success'});
+        setDocProcessingMsg2({message: 'Face extracted! Move to the next step', category: 'success'});
         setIsDocProcessing(false);
 
     }
@@ -384,7 +385,8 @@ const CustomerOnboarding = () => {
 
                     <DocumentUploadFieldset
                         isDocProcessing={isDocProcessing}
-                        docProcessingMsg={docProcessingMsg}
+                        docProcessingMsg={docProcessingMsg1}
+                        docProcessingMsg={docProcessingMsg2}
                         handleSelectDocument={handleSelectDocument}
                         handleNext={handleNext}
                         currentStep={currentStep}

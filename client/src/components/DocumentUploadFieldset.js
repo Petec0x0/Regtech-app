@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DocumentUploadFieldset = ({ isDocProcessing, docProcessingMsg, handleSelectDocument, handleNext, currentStep }) => {
+const DocumentUploadFieldset = ({ isDocProcessing, docProcessingMsg1, docProcessingMsg2, handleSelectDocument, handleNext, currentStep }) => {
     return (
         <>
             <fieldset style={{ display: (currentStep[0]) ? '' : 'none' }}>
@@ -25,9 +25,17 @@ const DocumentUploadFieldset = ({ isDocProcessing, docProcessingMsg, handleSelec
                     }
                     {
                         // show processing message if it is not empty
-                        (docProcessingMsg) ? (
-                            <div className={`alert alert-${docProcessingMsg.category}`}  role="alert">
-                                {docProcessingMsg.message}
+                        (docProcessingMsg1) ? (
+                            <div className={`alert alert-${docProcessingMsg1.category}`}  role="alert">
+                                {docProcessingMsg1.message}
+                            </div>
+                        ) : ''
+                    }
+                    {
+                        // show processing message if it is not empty
+                        (docProcessingMsg2) ? (
+                            <div className={`alert alert-${docProcessingMsg2.category}`}  role="alert">
+                                {docProcessingMsg2.message}
                             </div>
                         ) : ''
                     }
