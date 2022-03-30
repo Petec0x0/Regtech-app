@@ -351,7 +351,7 @@ const onboardEmail = `
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                         <td>
-                            <img src="http://127.0.0.1:3000/assets/logo.png" 
+                            <img src="https://regtech-hard.herokuapp.com/assets/logo.png" 
                                 alt="Useful alt text" width="60" height="60" 
                                 border="0" style="border:0; outline:none; text-decoration:none; display:block;" 
                             />
