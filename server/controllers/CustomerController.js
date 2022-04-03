@@ -46,7 +46,6 @@ const onboardCustomer = async (req, res, next) => {
 
         /**
          * Send email to customer 
-         * 357696598345-v9vj9ojgkcn4rsg73t9rdjllk1887kd9.apps.googleusercontent.com
          */
         // var transporter = nodemailer.createTransport({
         //     host: "smtp.mailtrap.io",
@@ -63,11 +62,11 @@ const onboardCustomer = async (req, res, next) => {
             secure: true,
             auth: {
                 type: 'OAuth2',
-                user: 'ptc0x0@gmail.com',
-                clientId: '357696598345-v9vj9ojgkcn4rsg73t9rdjllk1887kd9.apps.googleusercontent.com',
-                clientSecret: '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',
-                refreshToken: '1//04Z1zS7qbmsh2CgYIARAAGAQSNwF-L9IrMagMZgVBvg1hjy-8xyqTGHzPXWsZQh0-D4lRdEIvg0oxsrFWra5nY2fXZwElEO_GKlM',
-                accessToken: 'ya29.A0ARrdaM_bwRX_8jgTos_mffxGMLFA0cjrPiwGmfI5AtGQn6zNANqLTw_Zu0EJjtCyVdDO2lyApmIgPuVsm4UOwXxCWLAytVKP7uf3lUOnlz9_ip0V11B6y_D_t-tipVU4dZ2PnxG8MaHedP8P-3hLNUZATiQr'
+                user: process.env.userEmail,
+                clientId: process.env.clientId',
+                clientSecret: process.env.clientSecret,
+                refreshToken: process.env.refreshToken,
+                accessToken: process.env.accessToken
             }
         });
         
