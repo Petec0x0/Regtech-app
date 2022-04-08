@@ -82,7 +82,7 @@ const onboardCustomer = async (req, res, next) => {
              */
             html: onboardEmail.replace(/<CLIENTNAME>|<LINK>/gi, function (x) {
                 if (x == '<LINK>') {
-                    return `https://regtech-meduim.herokuapp.com/live-onboarding/${linkId}`;
+                    return `https://regtech-hard.herokuapp.com/live-onboarding/${linkId}`;
                 } else if (x == '<CLIENTNAME>') {
                     return user.name;
                 }
