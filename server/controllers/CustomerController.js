@@ -63,7 +63,7 @@ const onboardCustomer = async (req, res, next) => {
             auth: {
                 type: 'OAuth2',
                 user: process.env.userEmail,
-                clientId: process.env.clientId',
+                clientId: process.env.clientId,
                 clientSecret: process.env.clientSecret,
                 refreshToken: process.env.refreshToken,
                 accessToken: process.env.accessToken
