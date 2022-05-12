@@ -3,6 +3,8 @@
 
 For the deployed version of this project visit [Regtech-hard](https://regtech-hard.herokuapp.com/)
 
+[Demo video](https://drive.google.com/file/d/1XRaBcHURSzjF5cLNSyjVeZc2Btc4jEAm/view?usp=sharing)
+
 ### How to run this project locally
 
 Install `concurrently` globally.
