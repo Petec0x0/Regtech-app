@@ -1,7 +1,7 @@
 # iwu-aku
 The Regtech app assists organizations in onboarding and building confidence within their user base, preventing fraudsters from accessing services, and meeting KYC and regulatory requirements.
 
-Checkout a demo video [here](https://youtu.be/tGB71E1Sswk) 
+Checkout a demo video [here](#) 
 
 For the deployed version of this project visit [Regtech-hard](https://regtech-hard.herokuapp.com/)
 
